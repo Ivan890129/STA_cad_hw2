@@ -60,10 +60,8 @@ vector <double>index_output_net_capacitance,index_input_transition_time;
 bool inCommentBlock = false;
 
  // chat gpt //
-std::string removeComments(const std::string& line) {
+std::string removeComments(const std::string& line  ,bool& inCommentBlock) {
     std::string result;
-    inCommentBlock = false;//bool inCommentBlock = false;
-
     for (size_t i = 0; i < line.length(); ++i) {
         if (!inCommentBlock && line[i] == '/' && i + 1 < line.length() && line[i + 1] == '*') {
             inCommentBlock = true;
@@ -519,7 +517,7 @@ int main(int argc, char* argv[])
         if (commentPos != std::string::npos) {
             line = line.substr(0, commentPos);
         }
-        line = removeComments(line); // 移除 /* */
+        line = removeComments(line, inCommentBlock); // 移除 /* */
 
         stringstream in;
         in << line;
@@ -617,6 +615,7 @@ int main(int argc, char* argv[])
             cout << "cap" << i <<": " <<capacitance[i].size() << endl;
         }
     while (getline(inFile, line)) {
+        line = removeComments(line , inCommentBlock); 
         stringstream in;
         in << line;
         in >> str ;
